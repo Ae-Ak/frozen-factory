@@ -18,7 +18,23 @@ jobs:
           username: ${{ secrets.HOSTINGER_SSH_USER }}
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           script: |
-            cd ~/public_html/frozen-factory || cd ~ || cd /home/u775526407
+            echo "=== DEBUG INFO ==="
+            pwd
+            ls -la ~/
+            echo "=== Checking for frozen-factory ==="
+            find ~ -name "frozen-factory" -type d 2>/dev/null | head -5
+            echo "=== Current directory contents ==="
+            ls -la
+            echo "=== Deploying ==="
+            if [ -d ~/public_html/frozen-factory ]; then
+              cd ~/public_html/frozen-factory
+            elif [ -d ~/frozen-factory ]; then
+              cd ~/frozen-factory
+            else
+              echo "ERROR: frozen-factory directory not found!"
+              exit 1
+            fi
+            pwd
             git pull origin main
             npm install --production
             npm run build
