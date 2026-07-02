@@ -10,36 +10,35 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Deploy to Hostinger via SSH
-        uses: appleboy/ssh-action@master
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          host: ${{ secrets.HOSTINGER_SSH_HOST }}
-          port: ${{ secrets.HOSTINGER_SSH_PORT }}
-          username: ${{ secrets.HOSTINGER_SSH_USER }}
-          key: ${{ secrets.HOSTINGER_SSH_KEY }}
-          script: |
-            echo "=== DEBUG: Finding npm ==="
-            which npm || echo "npm not found in PATH"
-            find ~ -name npm -type f 2>/dev/null | head -5
+          node-version: '18'
 
-            echo "=== DEBUG: Checking PATH ==="
-            echo $PATH
+      - name: Install dependencies
+        run: npm install
 
-            echo "=== DEBUG: Node.js location ==="
-            find ~ -name "node" -type f 2>/dev/null | grep -E "bin/node$" | head -3
+      - name: Build Next.js
+        run: npm run build
 
-            echo "=== Deploying to Hostinger ==="
-            DEPLOY_DIR=~/domains/sandybrown-lapwing-903015.hostingersite.com
+      - name: Deploy via rsync
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -avz --delete
+          path: .next/
+          remote_path: ~/domains/sandybrown-lapwing-903015.hostingersite.com/.next/
+          remote_host: ${{ secrets.HOSTINGER_SSH_HOST }}
+          remote_port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
+          remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
 
-            if [ -d "$DEPLOY_DIR/.git" ]; then
-              echo "✅ Git repo found, pulling latest changes..."
-              cd "$DEPLOY_DIR"
-              git pull origin main
-            else
-              echo "⚠️  No git repo found, cloning repository..."
-              rm -rf "$DEPLOY_DIR"
-              git clone https://github.com/Ae-Ak/frozen-factory.git "$DEPLOY_DIR"
-              cd "$DEPLOY_DIR"
-            fi
-
-            echo "✅ Deployment erfolgreich!"
+      - name: Deploy public folder
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -avz --delete
+          path: public/
+          remote_path: ~/domains/sandybrown-lapwing-903015.hostingersite.com/public/
+          remote_host: ${{ secrets.HOSTINGER_SSH_HOST }}
+          remote_port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
+          remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
