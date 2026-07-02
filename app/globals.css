@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/* =============================================================
+   FROZEN FACTORY – Design-System
+   -------------------------------------------------------------
+   Branding-Farben als CSS-Variablen. Die beiden Design-Varianten
+   ("minimal" und "verspielt") werden über ein data-Attribut am
+   <html>-Element umgeschaltet – siehe DesignProvider.
+   ============================================================= */
+
+:root {
+  /* Markenfarben */
+  --rose: #eb515d;
+  --rose-dark: #c93641;
+  --rose-soft: #fdeef0;
+  --creme: #fbf1d9;
+  --creme-soft: #fdf8ec;
+  --ink: #2a2a2a;
+  --ink-soft: #5c5c5c;
+
+  /* Varianten-abhängige Werte (Standard = minimal) */
+  --radius-card: 0.75rem;
+  --radius-button: 0.5rem;
+  --page-bg: #ffffff;
+}
+
+/* Variante 2: Verspielt & Festival-nah – runder, wärmer, bunter */
+html[data-variant="verspielt"] {
+  --radius-card: 1.75rem;
+  --radius-button: 9999px;
+  --page-bg: var(--creme-soft);
+}
+
+/* Tailwind-Theme: macht die Variablen als Utility-Klassen nutzbar,
+   z.B. bg-rose, text-ink, bg-creme, rounded-card, rounded-btn */
+@theme inline {
+  --color-rose: var(--rose);
+  --color-rose-dark: var(--rose-dark);
+  --color-rose-soft: var(--rose-soft);
+  --color-creme: var(--creme);
+  --color-creme-soft: var(--creme-soft);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --radius-card: var(--radius-card);
+  --radius-btn: var(--radius-button);
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  /* Sanftes Scrollen zu Ankern (z.B. Kontakt-Formulare) */
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 0.4s ease;
+}
+
+/* ---------- Animationen (v.a. für die verspielte Variante) ---------- */
+
+/* Sanftes Auf- und Abschweben, z.B. für den Hero-Eisbecher */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Weiches Einblenden von unten beim Laden */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+
+/* Eis-Softserve-Aufbau: die "Schichten" wachsen nacheinander */
+@keyframes swirl-in {
+  from { opacity: 0; transform: scale(0.4) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-swirl {
+  animation: swirl-in 0.5s ease-out both;
+}
+
+/* Leichtes Wackeln für verspielte Hover-Effekte */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+.hover-wiggle:hover {
+  animation: wiggle 0.4s ease-in-out;
+}
+
+/* Nutzer mit reduzierter Bewegung: Animationen abschalten */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-fade-up,
+  .animate-swirl,
+  .hover-wiggle:hover {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
