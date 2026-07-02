@@ -54,7 +54,7 @@ export const creations: Creation[] = [
   {
     slug: "nussgenuss",
     name: "Nussgenuss",
-    tagline: "Nussig, knackig, groovy.",
+    tagline: "Nussig, knackig, groovy! ✨",
     description:
       "Geröstete Nüsse, warme Schokosoße und cremiges Softeis aus österreichischer Alpenvollmilch. Der Becher für alle, die es gehaltvoll und ehrlich mögen.",
     toppings: ["Schokosoße", "Geröstete Haselnüsse", "Karamell-Krokant"],
