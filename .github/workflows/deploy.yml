@@ -33,9 +33,9 @@ jobs:
       - name: Deploy to Hostinger
         uses: burnett01/rsync-deployments@5.2
         with:
-          switches: -avz
+          switches: -avz --delete
           path: deploy-pkg/
-          remote_path: ~/domains/sandybrown-lapwing-903015.hostingersite.com/
+          remote_path: ~/frozen-factory-temp/
           remote_host: ${{ secrets.HOSTINGER_SSH_HOST }}
           remote_port: ${{ secrets.HOSTINGER_SSH_PORT }}
           remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
