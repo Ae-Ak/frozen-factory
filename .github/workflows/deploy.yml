@@ -18,17 +18,24 @@ jobs:
           username: ${{ secrets.HOSTINGER_SSH_USER }}
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           script: |
-            echo "=== DEBUG INFO ==="
-            pwd
-            ls -la ~/
-            echo "=== Checking domains ==="
-            ls -la ~/domains/
-            echo "=== Looking for deployment location ==="
-            find ~/domains -name ".git" -type d 2>/dev/null | head -5
-            echo "=== Deploying ==="
-            cd ~/domains/sandybrown-lapwing-903015.hostingersite.com/ 2>/dev/null || cd ~/public_html/frozen-factory 2>/dev/null || (echo "ERROR: Website directory not found!"; exit 1)
-            pwd
-            git pull origin main
+            echo "=== Deploying to Hostinger ==="
+            DEPLOY_DIR=~/domains/sandybrown-lapwing-903015.hostingersite.com
+
+            if [ -d "$DEPLOY_DIR/.git" ]; then
+              echo "✅ Git repo found, pulling latest changes..."
+              cd "$DEPLOY_DIR"
+              git pull origin main
+            else
+              echo "⚠️  No git repo found, cloning repository..."
+              rm -rf "$DEPLOY_DIR"
+              git clone https://github.com/Ae-Ak/frozen-factory.git "$DEPLOY_DIR"
+              cd "$DEPLOY_DIR"
+            fi
+
+            echo "📦 Installing dependencies..."
             npm install --production
+
+            echo "🔨 Building Next.js..."
             npm run build
+
             echo "✅ Deployment erfolgreich!"
