@@ -16,9 +16,9 @@ jobs:
           host: ${{ secrets.HOSTINGER_SSH_HOST }}
           port: ${{ secrets.HOSTINGER_SSH_PORT }}
           username: ${{ secrets.HOSTINGER_SSH_USER }}
-          password: ${{ secrets.HOSTINGER_SSH_PASS }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
           script: |
-            cd ~/public_html/frozen-factory || cd ~
+            cd ~/public_html/frozen-factory || cd ~ || cd /home/u775526407
             git pull origin main
             npm install --production
             npm run build
