@@ -3,6 +3,8 @@
 Moderne, responsive Website für **Frozen Factory – Die rollende Softeisdiele**.
 Gebaut mit React / Next.js (App Router) und Tailwind CSS.
 
+> ✅ **Auto-Deploy aktiv:** Änderungen pushen → GitHub → Hostinger (automatisch!)
+
 ## Schnellstart
 
 ```bash
