@@ -42,3 +42,16 @@ jobs:
           remote_port: ${{ secrets.HOSTINGER_SSH_PORT }}
           remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
           remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
+
+      - name: Restart Node.js application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_SSH_HOST }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          username: ${{ secrets.HOSTINGER_SSH_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          script: |
+            echo "🔄 Restarting Node.js..."
+            pm2 restart all || echo "⚠️  pm2 not available, trying systemctl..."
+            systemctl restart nodejs || echo "⚠️  systemctl also failed"
+            echo "✅ Restart attempted!"
