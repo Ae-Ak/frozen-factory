@@ -18,7 +18,16 @@ jobs:
           username: ${{ secrets.HOSTINGER_SSH_USER }}
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           script: |
-            source ~/.bashrc
+            echo "=== DEBUG: Finding npm ==="
+            which npm || echo "npm not found in PATH"
+            find ~ -name npm -type f 2>/dev/null | head -5
+
+            echo "=== DEBUG: Checking PATH ==="
+            echo $PATH
+
+            echo "=== DEBUG: Node.js location ==="
+            find ~ -name "node" -type f 2>/dev/null | grep -E "bin/node$" | head -3
+
             echo "=== Deploying to Hostinger ==="
             DEPLOY_DIR=~/domains/sandybrown-lapwing-903015.hostingersite.com
 
@@ -32,11 +41,5 @@ jobs:
               git clone https://github.com/Ae-Ak/frozen-factory.git "$DEPLOY_DIR"
               cd "$DEPLOY_DIR"
             fi
-
-            echo "📦 Installing dependencies..."
-            npm install --production
-
-            echo "🔨 Building Next.js..."
-            npm run build
 
             echo "✅ Deployment erfolgreich!"
