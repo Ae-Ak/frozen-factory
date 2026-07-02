@@ -21,37 +21,24 @@ jobs:
       - name: Build Next.js
         run: npm run build
 
-      - name: Deploy via rsync
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy-pkg
+          cp -r .next deploy-pkg/
+          cp -r public deploy-pkg/
+          cp package.json deploy-pkg/
+          cp next.config.ts deploy-pkg/
+          cp -r node_modules deploy-pkg/
+          cd deploy-pkg && zip -r ../frozen-factory-deployment.zip . && cd ..
+          ls -lh frozen-factory-deployment.zip
+
+      - name: Deploy to Hostinger
         uses: burnett01/rsync-deployments@5.2
         with:
-          switches: -avz --delete
-          path: .next/
-          remote_path: ~/domains/sandybrown-lapwing-903015.hostingersite.com/.next/
+          switches: -avz
+          path: deploy-pkg/
+          remote_path: ~/domains/sandybrown-lapwing-903015.hostingersite.com/
           remote_host: ${{ secrets.HOSTINGER_SSH_HOST }}
           remote_port: ${{ secrets.HOSTINGER_SSH_PORT }}
           remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
           remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
-
-      - name: Deploy public folder
-        uses: burnett01/rsync-deployments@5.2
-        with:
-          switches: -avz --delete
-          path: public/
-          remote_path: ~/domains/sandybrown-lapwing-903015.hostingersite.com/public/
-          remote_host: ${{ secrets.HOSTINGER_SSH_HOST }}
-          remote_port: ${{ secrets.HOSTINGER_SSH_PORT }}
-          remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
-          remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
-
-      - name: Restart Node.js application
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOSTINGER_SSH_HOST }}
-          port: ${{ secrets.HOSTINGER_SSH_PORT }}
-          username: ${{ secrets.HOSTINGER_SSH_USER }}
-          key: ${{ secrets.HOSTINGER_SSH_KEY }}
-          script: |
-            echo "🔄 Restarting Node.js..."
-            pm2 restart all || echo "⚠️  pm2 not available, trying systemctl..."
-            systemctl restart nodejs || echo "⚠️  systemctl also failed"
-            echo "✅ Restart attempted!"
