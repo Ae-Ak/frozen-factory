@@ -28,9 +28,7 @@ jobs:
           cp -r public deploy-pkg/
           cp package.json deploy-pkg/
           cp next.config.ts deploy-pkg/
-          cp -r node_modules deploy-pkg/
-          cd deploy-pkg && zip -r ../frozen-factory-deployment.zip . && cd ..
-          ls -lh frozen-factory-deployment.zip
+          ls -lh deploy-pkg/
 
       - name: Deploy to Hostinger
         uses: burnett01/rsync-deployments@5.2
