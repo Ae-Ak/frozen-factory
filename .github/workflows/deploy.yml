@@ -18,6 +18,7 @@ jobs:
           username: ${{ secrets.HOSTINGER_SSH_USER }}
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           script: |
+            source ~/.bashrc
             echo "=== Deploying to Hostinger ==="
             DEPLOY_DIR=~/domains/sandybrown-lapwing-903015.hostingersite.com
 
